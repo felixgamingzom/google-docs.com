@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Viewer</title>
+  <link rel="icon" href="https://ssl.gstatic.com/docs/doclist/images/drive_icon_2022q3_32dp.png">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #f1f3f4;
+    }
+    #pdf-fake-ui {
+      height: 100vh;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #555;
+      z-index: 2;
+      position: relative;
+    }
+    .spinner {
+      border: 4px solid #ccc;
+      border-top: 4px solid #4285f4;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    #player {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      opacity: 0;
+      transition: opacity 1s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div id="pdf-fake-ui">
+  <div class="spinner"></div>
+  <div>Loading preview...</div>
+</div>
+
+<div id="player"></div>
+
+<script>
+  let player;
+
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      videoId: 'dQw4w9WgXcQ',
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        modestbranding: 1,
+        rel: 0,
+        showinfo: 0,
+        loop: 1,
+        playlist: 'dQw4w9WgXcQ'
+      },
+      events: {
+        onReady: (e) => {
+          e.target.mute(); // Ensures autoplay works on all devices
+          e.target.playVideo();
+        },
+        onStateChange: (e) => {
+          if (e.data === YT.PlayerState.PLAYING) {
+            document.getElementById('player').style.opacity = '1';
+            document.getElementById('pdf-fake-ui').style.display = 'none';
+            player.unMute(); // Unmute once autoplay is confirmed
+          }
+        }
+      }
+    });
+  }
+
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+</script>
+
+</body>
+</html>
